@@ -78,7 +78,11 @@ class MyPlugin(Star):
             setu_url = None
             for i in range(3):
                 try:
-                    data = requests.get(url).json()
+                    headers = {
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36'
+                    }
+                    data = requests.get(url, headers=headers).json()
+                    logger.debug(data)
                     setu_url = data['data']['urls']['regular']
                     break
                 except:
