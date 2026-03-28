@@ -112,7 +112,7 @@ class MyPlugin(Star):
                     url = x.url
                     if url == None: continue
                     name = url[-41:-9]
-                    file_size = event.message_obj.raw_message.message[i]['file_size']
+                    file_size = event.message_obj.raw_message.message[i]['data']['file_size']
                     if file_size < 5e4 or file_size > 1e7:
                         continue
                     t = await Check_Baidu(url, name, self.setu_path)
