@@ -42,7 +42,7 @@ class MyPlugin(Star):
         self.scheduler.add_job(
             func=self._call_update,  # 要添加任务的函数，不要带参数
             trigger=trigger,  # 触发器
-            kwargs={'self': self},  # 函数的参数列表，注意：只有一个值时，不能省略末尾的逗号
+            kwargs=None,  # 函数的参数列表，注意：只有一个值时，不能省略末尾的逗号
             misfire_grace_time=1,  # 允许的误差时间，建议不要省略
         )
 
