@@ -83,7 +83,7 @@ class MyPlugin(Star):
                     }
                     data = requests.get(url, headers=headers).json()
                     logger.debug(data)
-                    setu_url = data['data']['urls']['regular']
+                    setu_url = data['data'][0]['urls']['regular']
                     break
                 except:
                     pass
