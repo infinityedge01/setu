@@ -58,6 +58,7 @@ class MyPlugin(Star):
         setu_count = 0
 
     async def _call_update(self):
+        logger.debug('call_update')
         self.update_setu_count()
         await asyncio.sleep(10)
         self.update_contrib_count()
