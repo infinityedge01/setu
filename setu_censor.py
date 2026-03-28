@@ -16,20 +16,8 @@ def saveImg(url, imgname, imgfolderdir):
     with open(os.path.join(imgfolderdir, imgname + '.' + r.headers['Content-Type'][6:]), 'wb') as f:
         f.write(r.content)
 
-def downloadImg(url):
-    logger.debug(url)
-    r = requests.head(url).headers
-    logger.debug(r)
-    if 'Size' in r:
-        print('Size: ' + r['Size'])
-        return int(r['Size'])
-    return 0
-
     
 async def Check_Baidu(imgurl, imgname, imgfolderdir):
-    imgContent = downloadImg(imgurl)
-    if imgContent < 5e4 or imgContent > 1e7:
-        return
     logger.debug(imgurl)
     censor_APP_ID = '22842022'
     censor_API_KEY = 'SEBH4QACKkEpGX7NRr7f4tYY'

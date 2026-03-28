@@ -113,6 +113,9 @@ class MyPlugin(Star):
                     if url == None: continue
                     name = url[-41:-9]
                     logger.debug(name)
+                    logger.debug(x.toDict())
+                    if x.toDict()['data']['file_size'] < 5e4 or x.toDict()['data']['file_size'] > 1e7:
+                        continue
                     t = await Check_Baidu(url, name, self.setu_path)
                     if t == 1:
                         self.contrib_count += 1
