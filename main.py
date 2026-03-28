@@ -14,7 +14,7 @@ import os
 import asyncio
 import requests
 import datetime
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.date import DateTrigger
 from apscheduler.triggers.cron import CronTrigger
 
@@ -38,7 +38,7 @@ class MyPlugin(Star):
         self.last_visit = {}
         self.update_contrib_count()
         self.update_setu_count()
-        self.scheduler = AsyncIOScheduler()
+        self.scheduler = BackgroundScheduler()
         trigger = CronTrigger(second=10)
         self.scheduler.add_job(
             func=self._call_update,  # 要添加任务的函数，不要带参数
