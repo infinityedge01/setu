@@ -28,14 +28,14 @@ async def Check_Baidu(imgurl, imgname, imgfolderdir):
     imgContent = downloadImg(imgurl)
     if imgContent < 5e4 or imgContent > 1e7:
         return
-    
+    logger.debug(imgurl)
     censor_APP_ID = '22842022'
     censor_API_KEY = 'SEBH4QACKkEpGX7NRr7f4tYY'
     censor_SECRET_KEY = '0oI6FfOHbCuWSFlbgIpnlsBUGkKfOgxt'
     censor_client = AipContentCensor(censor_APP_ID, censor_API_KEY, censor_SECRET_KEY)
     
     censor_result = censor_client.imageCensorUserDefined(imgurl)
-    
+    logger.debug(censor_result)
     #print(censor_result)
     if 'data' in censor_result:
         s = ''
