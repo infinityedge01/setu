@@ -106,14 +106,14 @@ class MyPlugin(Star):
                     kwargs={'message_id':msg_data['message_id'], 'self_id':int(event.message_obj.self_id)},  # 函数的参数列表，注意：只有一个值时，不能省略末尾的逗号
                     misfire_grace_time=1,  # 允许的误差时间，建议不要省略
                 )
-            for x in event.message_obj.message:
+            for i, x in enumerate(event.message_obj.message):
                 if x.type == components.ComponentType.Image:
                     assert(type(x) == components.Image)
                     url = x.url
                     if url == None: continue
                     name = url[-41:-9]
-                    logger.debug(name)
-                    logger.debug(x.toDict())
+                    logger.debug(event.message_obj.raw_message)
+                    logger.debug(event.message_obj.raw_message.message[i])
                     if x.toDict()['data']['file_size'] < 5e4 or x.toDict()['data']['file_size'] > 1e7:
                         continue
                     t = await Check_Baidu(url, name, self.setu_path)
