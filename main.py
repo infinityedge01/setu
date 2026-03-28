@@ -107,24 +107,25 @@ class MyPlugin(Star):
                 Flag = await self.can_get_a_setu(user_id)
                 if not Flag:
                     await client.send_group_msg(group_id=int(event.get_group_id()), message= MessageSegment.text('你看太多涩图了'))
-                self.db.update_setu(user_id)
-                self.setu_count += 1
-                msg1 = await self.get_a_setu()
-                logger.debug(str(msg1))
-                msg_data = await client.send_group_msg(group_id=int(event.get_group_id()), message= msg1)
-                logger.debug(str(msg_data['message_id']))
-                # 制作一个“20秒钟后”触发器
-                delta = datetime.timedelta(seconds=20)
-                trigger = DateTrigger(
-                    run_date=datetime.datetime.now() + delta
-                )
-                logger.debug('撤回消息' + event.message_obj.self_id)
-                self.scheduler.add_job(
-                    func=event.bot.delete_msg,  # 要添加任务的函数，不要带参数
-                    trigger=trigger,  # 触发器
-                    kwargs={'message_id':msg_data['message_id'], 'self_id':int(event.message_obj.self_id)},  # 函数的参数列表，注意：只有一个值时，不能省略末尾的逗号
-                    misfire_grace_time=1,  # 允许的误差时间，建议不要省略
-                )
+                else:
+                    self.db.update_setu(user_id)
+                    self.setu_count += 1
+                    msg1 = await self.get_a_setu()
+                    logger.debug(str(msg1))
+                    msg_data = await client.send_group_msg(group_id=int(event.get_group_id()), message= msg1)
+                    logger.debug(str(msg_data['message_id']))
+                    # 制作一个“20秒钟后”触发器
+                    delta = datetime.timedelta(seconds=20)
+                    trigger = DateTrigger(
+                        run_date=datetime.datetime.now() + delta
+                    )
+                    logger.debug('撤回消息' + event.message_obj.self_id)
+                    self.scheduler.add_job(
+                        func=event.bot.delete_msg,  # 要添加任务的函数，不要带参数
+                        trigger=trigger,  # 触发器
+                        kwargs={'message_id':msg_data['message_id'], 'self_id':int(event.message_obj.self_id)},  # 函数的参数列表，注意：只有一个值时，不能省略末尾的逗号
+                        misfire_grace_time=1,  # 允许的误差时间，建议不要省略
+                    )
             for i, x in enumerate(event.message_obj.message):
                 if x.type == components.ComponentType.Image:
                     assert(type(x) == components.Image)
