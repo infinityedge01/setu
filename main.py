@@ -15,7 +15,8 @@ import asyncio
 import datetime
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.date import DateTrigger
-scheduler = AsyncIOScheduler()
+from apscheduler.triggers.cron import CronTrigger
+
 from .database import *
 
 @register("setu", "infedg", "一个简单的涩图插件", "0.1.0")
@@ -32,11 +33,18 @@ class MyPlugin(Star):
         self.setu_path = os.path.join(db_path, 'setu')
         if not os.path.exists(self.setu_path):
             os.makedirs(self.setu_path)
-
-    
         self.setu_list = os.listdir(self.setu_path)
         self.last_visit = {}
         self.update_contrib_count()
+        self.update_setu_count()
+        self.scheduler = AsyncIOScheduler()
+        trigger = CronTrigger(second=10)
+        self.scheduler.add_job(
+            func=self._call_update,  # 要添加任务的函数，不要带参数
+            trigger=trigger,  # 触发器
+            kwargs={'self': self},  # 函数的参数列表，注意：只有一个值时，不能省略末尾的逗号
+            misfire_grace_time=1,  # 允许的误差时间，建议不要省略
+        )
 
     def update_contrib_count(self):
         time = datetime.datetime.now().hour * 6 + datetime.datetime.now().minute // 10
@@ -48,7 +56,6 @@ class MyPlugin(Star):
         self.db.update_total_setu(time, self.setu_count)
         setu_count = 0
 
-    @scheduler.scheduled_job('cron', minute = '*/10')
     async def _call_update(self):
         self.update_setu_count()
         await asyncio.sleep(10)
@@ -93,7 +100,7 @@ class MyPlugin(Star):
                     run_date=datetime.datetime.now() + delta
                 )
                 logger.debug('撤回消息' + event.message_obj.self_id)
-                scheduler.add_job(
+                self.scheduler.add_job(
                     func=event.bot.delete_msg,  # 要添加任务的函数，不要带参数
                     trigger=trigger,  # 触发器
                     kwargs={'message_id':msg_data['message_id'], 'self_id':int(event.message_obj.self_id)},  # 函数的参数列表，注意：只有一个值时，不能省略末尾的逗号
