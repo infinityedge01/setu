@@ -17,7 +17,9 @@ def saveImg(url, imgname, imgfolderdir):
         f.write(r.content)
 
 def downloadImg(url):
+    logger.debug(url)
     r = requests.head(url).headers
+    logger.debug(r)
     if 'Size' in r:
         print('Size: ' + r['Size'])
         return int(r['Size'])
