@@ -12,6 +12,7 @@ from .setu_censor import Check_Baidu
 import random
 import os
 import asyncio
+import requests
 import datetime
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.date import DateTrigger
@@ -72,6 +73,18 @@ class MyPlugin(Star):
         return True
     
     async def get_a_setu(self) -> MessageSegment:
+        if len(self.setu_list) < 100:
+            url = 'https://api.lolicon.app/setu/v2?size=original&size=regular'
+            setu_url = None
+            for i in range(3):
+                try:
+                    data = requests.get(url).json()
+                    setu_url = data['data']['urls']['regular']
+                    break
+                except:
+                    pass
+            assert(setu_url)
+            return MessageSegment.image(setu_url)
         setu_file = random.choice(self.setu_list)
         cur_setu_path = os.path.join(self.setu_path, setu_file)
         logger.debug(cur_setu_path)
