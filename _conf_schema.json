@@ -1,0 +1,12 @@
+{
+  "group_filter_mode": {
+    "description": "群聊筛选模式",
+    "type": "string",
+    "options": ["whitelist", "blacklist"],
+    "default": "whitelist"
+  },
+  "group_list": {
+    "description": "群聊列表",
+    "type": "list"
+  }
+}

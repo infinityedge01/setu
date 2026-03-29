@@ -5,8 +5,7 @@ from astrbot.api.event import filter, AstrMessageEvent, MessageEventResult
 from astrbot.api.star import Context, Star, register
 from astrbot.api import logger
 from astrbot.core.message import components 
-from astrbot.api.event import MessageChain
-import astrbot.api.message_components as Comp
+from astrbot.api import AstrBotConfig
 from astrbot.core.utils.astrbot_path import get_astrbot_data_path
 from .setu_censor import Check_Baidu
 import random
@@ -22,8 +21,9 @@ from .database import *
 
 @register("setu", "infedg", "一个简单的涩图插件", "0.1.0")
 class MyPlugin(Star):
-    def __init__(self, context: Context):
+    def __init__(self, context: Context, config: AstrBotConfig): # AstrBotConfig 继承自 Dict，拥有字典的所有方法
         super().__init__(context)
+        self.config = config
 
     async def initialize(self):
         """可选择实现异步的插件初始化方法，当实例化该插件类之后会自动调用该方法。"""
@@ -99,6 +99,15 @@ class MyPlugin(Star):
     
     @filter.event_message_type(filter.EventMessageType.GROUP_MESSAGE)
     async def process_image_message(self, event: AstrMessageEvent):
+        group_filter = self.config.get("group_filter_mode", "")
+        group_list = [str(x) for x in self.config.get("group_list", [])]
+
+        if group_filter == 'whitelist':
+            if str(event.get_group_id()) not in group_list:
+                return
+        else:
+            if str(event.get_group_id()) in group_list:
+                return
         if event.get_platform_name() == "aiocqhttp":
             assert isinstance(event, AiocqhttpMessageEvent)
             client = event.bot # 得到 client
