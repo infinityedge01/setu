@@ -112,6 +112,7 @@ class MyPlugin(Star):
             assert isinstance(event, AiocqhttpMessageEvent)
             client = event.bot # 得到 client
             user_id = int(event.message_obj.sender.user_id)
+            logger.debug(event.message_str.strip())
             if event.message_obj.message_str == '涩图' or event.message_obj.message_str == '色图':
                 Flag = await self.can_get_a_setu(user_id)
                 if not Flag:
